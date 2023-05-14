@@ -1,0 +1,13 @@
+services:
+  master:
+    build: ./master
+    ports: 
+      - 6000:8080
+    volumes: 
+      - .:/app
+  worker:
+    build: ./worker
+    ports:
+      - 8000:8080
+    volumes:
+      - .:/app
