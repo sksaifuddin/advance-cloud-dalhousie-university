@@ -20,4 +20,22 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         exceptionDto.setError(invalidInputException.getError());
         return new ResponseEntity<ExceptionDto>(exceptionDto, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(FileNotFoundException.class)
+    public ResponseEntity<ExceptionDto> fileNotFoundException(FileNotFoundException exception) {
+        FileNotFoundException fileNotFoundException = new FileNotFoundException(exception.getFile());
+        ExceptionDto exceptionDto = new ExceptionDto();
+        exceptionDto.setFile(fileNotFoundException.getFile());
+        exceptionDto.setError(fileNotFoundException.getError());
+        return new ResponseEntity<ExceptionDto>(exceptionDto, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InvalidFileFormatException.class)
+    public ResponseEntity<ExceptionDto> invalidFileFormatException(InvalidFileFormatException exception) {
+        InvalidFileFormatException invalidInputException = new InvalidFileFormatException(exception.getFile());
+        ExceptionDto exceptionDto = new ExceptionDto();
+        exceptionDto.setFile(invalidInputException.getFile());
+        exceptionDto.setError(invalidInputException.getError());
+        return new ResponseEntity<ExceptionDto>(exceptionDto, HttpStatus.BAD_REQUEST);
+    }
 }
