@@ -10,7 +10,7 @@ public class InvalidInputException extends RuntimeException{
 
     public InvalidInputException(String file) {
         this.file = file;
-        this.error = "Input file not in CSV format.";
+        this.error = "Invalid JSON input.";
     }
 
     public String getFile() {
