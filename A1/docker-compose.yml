@@ -1,12 +1,14 @@
 services:
   master:
-    build: ./master
+    # build: ./master
+    image: shaiksaifuddin/csci5409-a1-master:latest
     ports: 
       - 6000:8080
     volumes: 
       - .:/app
   worker:
-    build: ./worker
+    # build: ./worker
+    image: shaiksaifuddin/csci5409-a1-worker:latest
     ports:
       - 8081:8081
     volumes:
