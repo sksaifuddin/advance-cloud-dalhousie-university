@@ -17,6 +17,11 @@ import java.io.IOException;
 @Service
 public class ProductServiceImpl implements ProductService {
 
+    /**
+     * used examples from this page: https://www.geeksforgeeks.org/reading-csv-file-java-using-opencsv/ to
+     * know how to use openCSV to read csv files.
+     * @param requestDto
+     */
     @Override
     public ProductSumResponseDto productSum(ProductSumRequestDto requestDto) {
         int sum = 0;
@@ -37,7 +42,7 @@ public class ProductServiceImpl implements ProductService {
                     String currentProduct = nextLine[0];
                     int quantity = Integer.parseInt(nextLine[1]);
 
-                    if (currentProduct.equalsIgnoreCase(requestDto.getProduct())) {
+                    if (currentProduct.equals(requestDto.getProduct())) {
                         sum += quantity;
                     }
                 }
