@@ -19,6 +19,14 @@ const options = {
     grpc.credentials.createInsecure()
   );
 
-  client.StoreData({data: "this is from client"}, function(err, response) {
-    console.log('Greeting:', response.s3uri);
+  // client.StoreData({data: "this is from client"}, function (err, response)  {
+  //   console.log('Greeting:', response);
+  // });
+
+  // client.AppendData({data: "append this text"}, (err, response) => {
+  //   console.log('Greeting:', response);
+  // });
+
+  client.DeleteFile({s3uri: "https://csco5409-test-assignment.s3.amazonaws.com/csci5409.txt"}, (err, response) => {
+    console.log('Greeting:', response);
   });
