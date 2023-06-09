@@ -15,18 +15,18 @@ const options = {
   const EC2Operations = grpc.loadPackageDefinition(packageDefinition).EC2Operations;
 
   const client = new EC2Operations(
-    "localhost:50051",
+    "44.211.81.67:8080",
     grpc.credentials.createInsecure()
   );
 
-  // client.StoreData({data: "this is from client"}, function (err, response)  {
-  //   console.log('Greeting:', response);
-  // });
+  client.StoreData({data: "this is from client"}, function (err, response)  {
+    console.log('Greeting:', response);
+  });
 
   // client.AppendData({data: "append this text"}, (err, response) => {
   //   console.log('Greeting:', response);
   // });
 
-  client.DeleteFile({s3uri: "https://csco5409-test-assignment.s3.amazonaws.com/csci5409.txt"}, (err, response) => {
-    console.log('Greeting:', response);
-  });
+  // client.DeleteFile({s3uri: "https://csco5409-test-assignment.s3.amazonaws.com/csci5409.txt"}, (err, response) => {
+  //   console.log('Greeting:', response);
+  // });

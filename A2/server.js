@@ -1,5 +1,5 @@
 const grpc = require("@grpc/grpc-js");
-const PROTO_PATH = "./operations.proto";
+const PROTO_PATH = "./computeandstorage.proto";
 var protoLoader = require("@grpc/proto-loader");
 const AWS = require("aws-sdk");
 const { storeDataOperation, makeBucketPublic,  } = require('./operations/storeData');
@@ -14,7 +14,7 @@ const options = {
   oneofs: true,
 };
 var packageDefinition = protoLoader.loadSync(PROTO_PATH, options);
-const opearationProto = grpc.loadPackageDefinition(packageDefinition);
+const opearationProto = grpc.loadPackageDefinition(packageDefinition).computeandstorage;
 
 const s3 = new AWS.S3({
   accessKeyId: "AKIA6A6UQKPZI7PAFQTB",

@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+package computeandstorage;
+
 service EC2Operations {
  rpc StoreData (StoreRequest) returns (StoreReply) {}
  rpc AppendData (AppendRequest) returns (AppendReply) {}
