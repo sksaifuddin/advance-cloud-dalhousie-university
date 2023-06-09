@@ -62,7 +62,7 @@ function main() {
   });
 
   server.bindAsync(
-    "127.0.0.1:50051",
+    "localhost:8080",
     grpc.ServerCredentials.createInsecure(),
     (error, port) => {
       console.log("Server running at http://127.0.0.1:50051");
