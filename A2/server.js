@@ -51,7 +51,9 @@ function DeleteFile(call, callback) {
 /**
  * Starts an RPC server that receives requests for the Greeter service at the
  * sample server port
- */
+ * Reference: https://grpc.io/docs/languages/node/quickstart/
+ * All the overall template code for grpc server is taken from the above link.
+ */ 
 function main() {
   var server = new grpc.Server();
 

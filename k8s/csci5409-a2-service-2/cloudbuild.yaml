@@ -1,0 +1,25 @@
+steps:
+  # Build the Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'us-central1-docker.pkg.dev/advance-cloud-assignment/csci5409-assignment/csci5409-service-2:${SHORT_SHA}', '.']
+
+  # Push the Docker image to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'us-central1-docker.pkg.dev/advance-cloud-assignment/csci5409-assignment/csci5409-service-2:${SHORT_SHA}']
+  
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'sed'
+    args: [
+      '-i',
+      's/IMAGE_TAG/$SHORT_SHA/g',
+      './kubernetes-workload.yml'
+    ]
+
+  # deploy gke cluster
+  - name: 'gcr.io/cloud-builders/gke-deploy'
+    args:
+      - 'run'
+      - '--filename=./kubernetes-workload.yml'
+      - '--cluster=assignment-cluster'
+      - '--location=us-central1-a'
+      - '--timeout=20m'

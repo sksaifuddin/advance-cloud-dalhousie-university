@@ -10,7 +10,7 @@ function appendDataOperation(s3, fileMessage) {
     
         s3.getObject(downloadParams, function(err, data) {
             if (err) {
-              console.error('Error downloading file:', err);
+              reject(err);
             } else {
               const existingFileData = data.Body.toString();
               const modifiedFileData = existingFileData + fileMessage;
@@ -23,9 +23,8 @@ function appendDataOperation(s3, fileMessage) {
           
               s3.upload(uploadParams, function(err, data) {
                 if (err) {
-                  console.error('Error uploading file:', err);
+                  reject(err);
                 } else {
-                  console.log('File uploaded successfully. Location:', data.Location);
                   resolve(data.Location);
                 }
               });
