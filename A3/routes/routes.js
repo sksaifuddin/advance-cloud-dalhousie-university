@@ -5,7 +5,7 @@ const db = require('../database');
 
 router.post('/store-products', (req, res) => {
     console.log(req.body);
-    const body = req.body;
+    const body = req.body.products;
     const sql = "INSERT INTO products (name, price, availability) VALUES ?";
     const items = body.map(obj => Object.values(obj))
     db.query(sql,[items], function (err, result) {
@@ -16,5 +16,14 @@ router.post('/store-products', (req, res) => {
     
     return res.send("hello world");
 });
+
+router.get("/list-products", (req, res) => {
+    db.query("SELECT * FROM products", function (err, result) {
+        if (err) throw err;
+        res.send({
+            products: result
+        })
+      });
+})
 
 module.exports = router;
