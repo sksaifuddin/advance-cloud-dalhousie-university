@@ -12,7 +12,7 @@ router.post('/store-products', (req, res) => {
         if (err) throw err;
         console.log('result', result);
         console.log("1 record inserted");
-        return res.send({ 
+        res.send({ 
                 message: "Success."
             });
     });
