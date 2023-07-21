@@ -1,0 +1,10 @@
+{
+  "devDependencies": {
+    "serverless-step-functions": "^3.14.0"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "install": "^0.13.0",
+    "npm": "^9.8.1"
+  }
+}

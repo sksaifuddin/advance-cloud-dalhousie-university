@@ -1,0 +1,98 @@
+service: hashing-service
+frameworkVersion: "3"
+
+plugins:
+  - serverless-step-functions
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: us-east-1
+  stage: dev
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'sns:*'
+        - 'sqs:*'
+        - 'dynamodb:*'
+        - 'stateMachines: *'
+        - 'states: *'
+      Resource: '*'
+  role: arn:aws:iam::185231447271:role/LabRole
+
+functions:
+  
+  sha256Hash:
+    handler: handler.sha256Hash
+    events:
+      - http:
+          path: sha256
+          method: post
+
+  md5Hash:
+    handler: handler.md5Hash
+    events:
+      - http:
+          path: md5
+          method: post
+
+  bcryptHash:
+    handler: handler.bcryptHash
+    events:
+      - http:
+          path: bcrypt
+          method: post
+
+  postToUrl:
+    handler: handler.postToUrl
+    events:
+      - http:
+          path: post-to-url
+          method: post
+
+stepFunctions:
+  stateMachines:
+    hashingStateMachine:
+      name: HashingStateMachine
+      role: arn:aws:iam::185231447271:role/LabRole
+      definition:
+        Comment: "Hashing State Machine"
+        StartAt: PerformHashing
+        States:
+          PerformHashing:
+            Type: Choice
+            Choices:
+              - Variable: "$.action"
+                StringEquals: "sha256"
+                Next: Sha256Hash
+              - Variable: "$.action"
+                StringEquals: "md5"
+                Next: Md5Hash
+              - Variable: "$.action"
+                StringEquals: "bcrypt"
+                Next: BcryptHash
+              - Variable: "$.action"
+                StringEquals: "other"
+                Next: InvalidAction
+            Default: InvalidAction
+          Sha256Hash:
+            Type: Task
+            Resource: arn:aws:lambda:${self:provider.region}:185231447271:function:${self:service}-${self:provider.stage}-sha256Hash
+            Next: PerformPostToUrl
+          Md5Hash:
+            Type: Task
+            Resource: arn:aws:lambda:${self:provider.region}:185231447271:function:${self:service}-${self:provider.stage}-md5Hash
+            Next: PerformPostToUrl
+          BcryptHash:
+            Type: Task
+            Resource: arn:aws:lambda:${self:provider.region}:185231447271:function:${self:service}-${self:provider.stage}-bcryptHash
+            Next: PerformPostToUrl
+          PerformPostToUrl:
+            Type: Task
+            Resource: arn:aws:lambda:${self:provider.region}:185231447271:function:${self:service}-${self:provider.stage}-postToUrl
+            ResultPath: "$.result"
+            End: true
+          InvalidAction:
+            Type: Fail
+            Error: "InvalidActionError"
+            Cause: "Invalid action provided."
