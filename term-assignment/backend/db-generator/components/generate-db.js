@@ -9,7 +9,8 @@ const generateDb = async (userId, dbName, columns) => {
 
 const createNewUserTable = (dbName, columns) => {
   return new Promise((resolve, reject) => {
-    const columnStrings = columns.map(
+    const columnsWithId = [{ name: "id", type: "VARCHAR" }, ...columns];
+    const columnStrings = columnsWithId.map(
       (column) =>
         `${column.name} ${
           column.type === "VARCHAR" ? "VARCHAR(255)" : column.type

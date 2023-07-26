@@ -13,7 +13,7 @@ const { generateDb } = require('../components/generate-db');
  */
 router.post('/generate-db', async (req, res) => {
     const { userId, dbName, columns } = req.body;
-    const newDatabseName = `${userId}_${dbName}`;
+    const newDatabseName = `${dbName}_${userId}`;
     const response = await generateDb(userId, newDatabseName, columns)
     res.send(response);
 })
