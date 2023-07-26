@@ -3,7 +3,7 @@ const { v4: uuid } = require("uuid");
 
 const generateDb = async (userId, dbName, columns) => {
   const res = await createNewUserTable(dbName, columns);
-  await insertDBdetails(userId, dbName);
+  await insertDBdetails(dbName, userId);
   return res;
 };
 
