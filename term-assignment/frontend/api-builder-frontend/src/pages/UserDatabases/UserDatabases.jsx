@@ -7,6 +7,7 @@ import MenuItem from '@mui/material/MenuItem';
 import './UserDatabases.scss';
 import FormDrawer from '../../components/FormDrawer/FormDrawer';
 import CancelIcon from '@mui/icons-material/Cancel';
+import { generateDatabase } from '../../services/generate-db-service';
 
 function UserDatabases() {
 
@@ -22,11 +23,21 @@ function UserDatabases() {
     setIsDrawerOpen(false);
   };
 
-  const handleFormSubmit = (data) => {
+  const handleFormSubmit = async (data) => {
     const tableData = {
       tableName,
       columns: formData,
     };
+
+    try {
+      const userId = localStorage.getItem("user_id");
+      const response = await generateDatabase(userId, tableName, formData);
+      console.log('API response:', response);
+      handleDrawerClose();
+    } catch (error) {
+      console.error('Error making API call:', error);
+      // Handle error, e.g., show an error message to the user
+    }
     console.log('Form data:', tableData);
     handleDrawerClose();
   };
