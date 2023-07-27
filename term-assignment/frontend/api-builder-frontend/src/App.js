@@ -2,6 +2,7 @@ import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Layout from "./components/layout/Layout";
 import UserDatabases from "./pages/UserDatabases/UserDatabases";
+import ApiList from "./pages/ApiList/ApiList";
 
 function App() {
   return (
@@ -10,6 +11,7 @@ function App() {
         <div className="App">
           <Routes>
             <Route path="/" element={<UserDatabases />} />
+            <Route path="/api" element={<ApiList />} />
           </Routes>
         </div>
       </Layout>
