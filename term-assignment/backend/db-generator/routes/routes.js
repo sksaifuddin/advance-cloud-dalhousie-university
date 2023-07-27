@@ -3,6 +3,7 @@ const router = express.Router();
 const { generateDb } = require('../components/generate-db');
 const { generateApiStrings } = require('../components/generate-api-strings');
 const { getAllTables } = require('../components/get-all-tables');
+const { getAllTablesList } = require('../components/get-all-tables-list');
 
 /**
  * {
@@ -30,6 +31,14 @@ router.get('/get-all-tables/:userId', async (req, res) => {
     const { userId } = req?.params;
     console.log('user id', userId);
     const data = await getAllTables(userId);
+    console.log('final data', data);
+    res.send(data);
+})
+
+router.get('/get-all-tables-list/:userId', async (req, res) => {
+    const { userId } = req?.params;
+    console.log('user id', userId);
+    const data = await getAllTablesList(userId);
     console.log('final data', data);
     res.send(data);
 })
