@@ -8,7 +8,7 @@ const SideNavbar = () => {
           <div className="sidebar__content">
           <ul className="sidebar__list">
             <li className="sidebar__item">
-              <Link to="/database" className="sidebar__link">Database</Link>
+              <Link to="/" className="sidebar__link">Database</Link>
             </li>
             <li className="sidebar__item">
               <Link to="/api" className="sidebar__link">API</Link>

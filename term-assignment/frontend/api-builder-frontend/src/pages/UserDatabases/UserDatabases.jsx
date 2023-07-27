@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect  } from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import FormControl from '@mui/material/FormControl';
@@ -8,12 +8,22 @@ import './UserDatabases.scss';
 import FormDrawer from '../../components/FormDrawer/FormDrawer';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { generateDatabase } from '../../services/generate-db-service';
+import TablesList from './TablesList/TablesList';
 
 function UserDatabases() {
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [formData, setFormData] = useState([]);
   const [tableName, setTableName] = useState('');
+  const [reloadData, setReloadData] = useState(false);
+
+  useEffect(() => {
+    console.log('in use effect')
+    if (reloadData) {
+      // Reset the reloadData state to false to avoid infinite loop
+      setReloadData(false);
+    }
+  }, [reloadData]);
 
   const handleDrawerOpen = () => {
     setIsDrawerOpen(true);
@@ -33,6 +43,7 @@ function UserDatabases() {
       const userId = localStorage.getItem("user_id");
       const response = await generateDatabase(userId, tableName, formData);
       console.log('API response:', response);
+      setReloadData(true);
       handleDrawerClose();
     } catch (error) {
       console.error('Error making API call:', error);
@@ -110,9 +121,14 @@ function UserDatabases() {
           Create new Table
         </Button>
       </div>
+
       <FormDrawer open={isDrawerOpen} onClose={handleDrawerClose}>
         {formContent}
       </FormDrawer>
+
+      <div>
+        <TablesList reloadData={reloadData}></TablesList>
+      </div>
     </div>
   );
 }
