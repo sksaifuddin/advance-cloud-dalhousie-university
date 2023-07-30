@@ -42,7 +42,7 @@ exports.handler = async (event) => {
 };
 
 const getTableNameAndUserFromPath = (path) => {
-  const [_, id, tableName, recordId] = path.split("/");
+  const [_,_stageName, id, tableName, recordId] = path.split("/");
   return { user: id, tableName, recordId };
 };
 

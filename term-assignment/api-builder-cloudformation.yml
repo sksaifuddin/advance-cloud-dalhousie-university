@@ -1,0 +1,89 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: Lambda with HTTP API gateway demo stack
+
+Resources:
+
+  EC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      ImageId: ami-0f34c5ae932e6f0e4
+      SecurityGroups:
+        - !Ref EC2SecurityGroup
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          yum update -y
+          yum install -y docker
+          service docker start
+          usermod -a -G docker ec2-user
+          docker pull shaiksaifuddin/api-builder:latest
+          docker run -d -p 80:8080 shaiksaifuddin/api-builder:latest
+
+  EC2SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable SSH and HTTP access
+      SecurityGroupIngress:
+        - CidrIp: 0.0.0.0/0
+          IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+        - CidrIp: 0.0.0.0/0
+          IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+
+  apiExecutionFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: "apiExecutionFunction"
+      Runtime: nodejs14.x
+      Handler: "index.handler"
+      Role: arn:aws:iam::551539299746:role/LabRole  # Use the LabRole ARN here
+      Code:
+        S3Bucket: my-function-code-b00  # Replace with your S3 bucket name
+        S3Key: api-endpoint-handler.zip 
+
+  apiExecutionLambdaInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref apiExecutionFunction
+      Action: "lambda:InvokeFunction"
+      Principal: apigateway.amazonaws.com
+
+  ApiBuilderHttpApi:
+    Type: AWS::ApiGatewayV2::Api
+    Properties:
+      Name: apiBuilder
+      ProtocolType: HTTP
+      Description: HTTP API for API Builder
+  
+
+  ApiBuilderProxyPlusIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref ApiBuilderHttpApi
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !Sub 'arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${apiExecutionFunction.Arn}/invocations'
+      IntegrationMethod: POST
+      PayloadFormatVersion: '2.0'
+  
+  ApiBuilderProxyPlusRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref ApiBuilderHttpApi
+      RouteKey: ANY /{proxy+}
+      Target: !Join
+        - /
+        - - integrations
+          - !Ref ApiBuilderProxyPlusIntegration
+  
+  ApiBuilderDefaultStage:
+      Type: AWS::ApiGatewayV2::Stage
+      Properties:
+        ApiId:
+          Ref: ApiBuilderHttpApi
+        AutoDeploy: true
+        StageName: dev
