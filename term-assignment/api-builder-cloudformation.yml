@@ -35,6 +35,36 @@ Resources:
           FromPort: 80
           ToPort: 80
 
+  APIBuilderDatabase:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      Engine: mysql
+      DBName: apibuilder
+      MasterUsername: admin
+      MasterUserPassword: password
+      DBInstanceClass: db.t2.micro
+      AllocatedStorage: 20
+      StorageType: gp2
+      MultiAZ: false
+      PubliclyAccessible: true
+      VPCSecurityGroups:
+        - !GetAtt APIDatabaseSecurityGroup.GroupId
+      Tags:
+        - Key: Name
+          Value: APIBuilderDatabase
+      BackupRetentionPeriod: 7
+      DeletionProtection: false
+
+  APIDatabaseSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable access to RDS instance for API Builder
+      SecurityGroupIngress:
+        - CidrIp: 0.0.0.0/0
+          IpProtocol: tcp
+          FromPort: 3306
+          ToPort: 3306
+
   apiExecutionFunction:
     Type: AWS::Lambda::Function
     Properties:
