@@ -1,9 +1,13 @@
-const { connectToDatabase } = require("../database");
+const { connectToDatabase, getSecretsFromManager } = require("../database");
 const { v4: uuid } = require("uuid");
+const jwt = require("jsonwebtoken");
 
 const generateDb = async (userId, dbName, columns) => {
   const res = await createNewUserTable(dbName, columns);
   await insertDBdetails(dbName, userId);
+  const { secretkey } =  await getSecretsFromManager();
+  const token = generateJWTToken(dbName, userId, secretkey);
+  console.log('token', token);
   return res;
 };
 
@@ -42,6 +46,11 @@ const insertDBdetails = async (dbName, userId) => {
       }
     );
   });
+};
+
+const generateJWTToken = (dbName, userId, secretkey) => {
+  const payload = { dbName, userId };
+  return jwt.sign(payload, secretkey, { expiresIn: "1h" });
 };
 
 module.exports = {

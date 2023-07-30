@@ -5,7 +5,7 @@ const {
 } = require("@aws-sdk/client-secrets-manager");
 
 // Function to retrieve the database credentials from AWS Secrets Manager
-const getDatabaseCredentials = async () => {
+const getSecretsFromManager = async () => {
   const secretsManagerClient = new SecretsManagerClient({
     region: "us-east-1",
   }); // Replace with your desired region
@@ -17,12 +17,13 @@ const getDatabaseCredentials = async () => {
     const data = await secretsManagerClient.send(command);
     if ("SecretString" in data) {
       const secretString = data.SecretString;
-      const { user, password, host, database } = JSON.parse(secretString);
+      const { user, password, host, database, secretkey } = JSON.parse(secretString);
       return {
         user,
         password,
         host,
         database,
+        secretkey
       };
     } else {
       throw new Error("SecretString not found in the response");
@@ -38,8 +39,8 @@ const getDatabaseCredentials = async () => {
 
 // Function to establish the database connection
 const connectToDatabase = async () => {
-//   const { user, password, host, database } = await getDatabaseCredentials();
-  const conn = mysql.createConnection(await getDatabaseCredentials());
+  const { secretkey, ...dbcredentials } = await getSecretsFromManager();
+  const conn = mysql.createConnection(dbcredentials);
 
   conn.connect((err) => {
     if (err) {
@@ -54,4 +55,5 @@ const connectToDatabase = async () => {
 
 module.exports = {
   connectToDatabase,
+  getSecretsFromManager
 };

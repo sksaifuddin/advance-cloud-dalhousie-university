@@ -40,7 +40,7 @@ Resources:
     Properties:
       Name: APIBuilderSecret
       Description: API Builder secrets
-      SecretString: '{"user": "admin", "password": "password", "database": "user", "host": "api-builder-1.ctqeg0gnpbab.us-east-1.rds.amazonaws.com"}'
+      SecretString: '{"user": "admin", "password": "password", "database": "user", "host": "api-builder-1.ctqeg0gnpbab.us-east-1.rds.amazonaws.com", "secretkey": "shaik-saifuddin-b00934531"}'
 
   APIBuilderDatabase:
     Type: AWS::RDS::DBInstance
