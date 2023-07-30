@@ -34,6 +34,13 @@ Resources:
           IpProtocol: tcp
           FromPort: 80
           ToPort: 80
+  
+  APIBuilderSecret:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Name: APIBuilderSecret
+      Description: API Builder secrets
+      SecretString: '{"user": "admin", "password": "password", "database": "user", "host": "api-builder-1.ctqeg0gnpbab.us-east-1.rds.amazonaws.com"}'
 
   APIBuilderDatabase:
     Type: AWS::RDS::DBInstance

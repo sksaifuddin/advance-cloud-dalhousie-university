@@ -1,4 +1,4 @@
-const db = require("../database");
+const { connectToDatabase } = require("../database");
 const { v4: uuid } = require("uuid");
 
 const generateDb = async (userId, dbName, columns) => {
@@ -7,7 +7,8 @@ const generateDb = async (userId, dbName, columns) => {
   return res;
 };
 
-const createNewUserTable = (dbName, columns) => {
+const createNewUserTable = async (dbName, columns) => {
+  const db = await connectToDatabase();
   return new Promise((resolve, reject) => {
     const columnsWithId = [{ name: "id", type: "VARCHAR" }, ...columns];
     const columnStrings = columnsWithId.map(
@@ -28,7 +29,8 @@ const createNewUserTable = (dbName, columns) => {
   });
 };
 
-const insertDBdetails = (dbName, userId) => {
+const insertDBdetails = async (dbName, userId) => {
+  const db = await connectToDatabase();
   return new Promise((resolve, reject) => {
     db.query(
       `INSERT INTO users_databases 

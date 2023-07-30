@@ -1,7 +1,8 @@
-const db = require("../database");
+const { connectToDatabase } = require("../database");
 
 // Function to fetch column details (name and type) for a specific table
 const getTableColumns = async (tableName) => {
+  const db = await connectToDatabase();
   const query = `
     SELECT column_name AS name, column_type AS type
     FROM INFORMATION_SCHEMA.COLUMNS
@@ -16,6 +17,7 @@ const getTableColumns = async (tableName) => {
 };
 
 const getAllTables = async (userId) => {
+  const db = await connectToDatabase();
   try {
     // Step 1: Get all tables of the user from the users_databases table
     const userTables = await new Promise((resolve, reject) => {

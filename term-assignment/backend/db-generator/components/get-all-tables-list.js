@@ -1,11 +1,12 @@
-const db = require("../database");
+const { connectToDatabase } = require("../database");
 
 const getAllTablesList = async (userId) => {
     const res = await getTablesFromUserListTable(userId);
     return res;
 }
 
-const getTablesFromUserListTable = (userId) => {
+const getTablesFromUserListTable = async (userId) => {
+    const db = await connectToDatabase();
     return new Promise((resolve, reject) => {
         db.query(
             `SELECT * FROM users_databases WHERE user_id = ?`,
