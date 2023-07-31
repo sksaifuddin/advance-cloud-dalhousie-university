@@ -1,6 +1,9 @@
 const { connectToDatabase, getSecretsFromManager } = require("../database");
 const { v4: uuid } = require("uuid");
 const jwt = require("jsonwebtoken");
+const { SNSClient, PublishCommand } = require("@aws-sdk/client-sns");
+
+const sns = new SNSClient({ region: "us-east-1" });
 
 const generateDb = async (userId, dbName, columns) => {
   const res = await createNewUserTable(dbName, columns);
@@ -8,6 +11,7 @@ const generateDb = async (userId, dbName, columns) => {
   const { secretkey } =  await getSecretsFromManager();
   const token = generateJWTToken(dbName, userId, secretkey);
   console.log('token', token);
+  await sendEmail(dbName, token);
   return res;
 };
 
@@ -51,6 +55,23 @@ const insertDBdetails = async (dbName, userId) => {
 const generateJWTToken = (dbName, userId, secretkey) => {
   const payload = { dbName, userId };
   return jwt.sign(payload, secretkey, { expiresIn: "1h" });
+};
+
+const sendEmail = async (dbName, token) => {
+  const message = `Your JWT token for ${dbName} is ${token}`;
+  
+  const params = {
+    Message: message,
+    Subject: "New JWT Token",
+    TopicArn: "arn:aws:sns:us-east-1:551539299746:ApiBuilderTopic"
+  };
+  
+  try {
+    await sns.send(new PublishCommand(params));
+    console.log("Email sent successfully!");
+  } catch (error) {
+    console.error("Error sending email:", error);
+  }
 };
 
 module.exports = {

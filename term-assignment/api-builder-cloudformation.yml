@@ -124,3 +124,28 @@ Resources:
           Ref: ApiBuilderHttpApi
         AutoDeploy: true
         StageName: dev
+  
+
+  ApiBuilderSNSTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: "ApiBuilderTopic" 
+      DisplayName: "API Builder SNS Topic"
+      Subscription:
+        - Protocol: email
+          Endpoint: "shaiksaifuddin95@gmail.com"
+
+  # # New Lambda IAM Policy to allow SNS Publish
+  # ApiBuilderLambdaPolicy:
+  #   Type: AWS::IAM::Policy
+  #   Properties:
+  #     PolicyName: "ApiBuilderLambdaPolicy"
+  #     PolicyDocument:
+  #       Version: "2012-10-17"
+  #       Statement:
+  #         - Effect: Allow
+  #           Action:
+  #             - "sns:Publish"
+  #           Resource: !Ref ApiBuilderSNSTopic
+  #     Roles:
+  #       - LabRole
