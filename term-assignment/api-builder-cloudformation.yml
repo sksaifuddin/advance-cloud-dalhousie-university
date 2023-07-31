@@ -40,7 +40,14 @@ Resources:
     Properties:
       Name: APIBuilderSecret
       Description: API Builder secrets
-      SecretString: '{"user": "admin", "password": "password", "database": "user", "host": "api-builder-1.ctqeg0gnpbab.us-east-1.rds.amazonaws.com", "secretkey": "shaik-saifuddin-b00934531"}'
+      SecretString: !Sub |
+        {
+          "user": "admin",
+          "password": "password",
+          "database": "user",
+          "secretkey": "shaik-saifuddin-b00934531",
+          "host": !GetAtt APIBuilderDatabase.Endpoint
+        }
 
   APIBuilderDatabase:
     Type: AWS::RDS::DBInstance
@@ -61,7 +68,31 @@ Resources:
           Value: APIBuilderDatabase
       BackupRetentionPeriod: 7
       DeletionProtection: false
+      DBInstanceIdentifier: !Sub "ApiBuilderRDSInstance-${AWS::StackName}"
 
+  TriggerFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: "ApiBuilderTriggerFunction"
+      Runtime: nodejs14.x
+      Handler: "index.handler"
+      Role: arn:aws:iam::551539299746:role/LabRole
+      Code:
+        ZipFile: >
+          var response = require('cfn-response');
+          exports.handler = function(event, context) {
+          console.log(event);
+          var input = parseInt(event.ResourceProperties.Input);
+            var responseData = {Value: input * 5};
+          response.send(event, context, response.SUCCESS, responseData);
+          };
+  
+  ApiBuilderTriggerCustomResource:
+    Type: Custom::ApiBuilderTriggerCustomResource
+    Properties:
+      ServiceToken: !GetAtt TriggerFunction.Arn
+      DBInstanceIdentifier: !Ref APIBuilderDatabase
+  
   APIDatabaseSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -78,10 +109,10 @@ Resources:
       FunctionName: "apiExecutionFunction"
       Runtime: nodejs14.x
       Handler: "index.handler"
-      Role: arn:aws:iam::551539299746:role/LabRole  # Use the LabRole ARN here
+      Role: arn:aws:iam::551539299746:role/LabRole
       Code:
-        S3Bucket: my-function-code-b00  # Replace with your S3 bucket name
-        S3Key: api-endpoint-handler.zip 
+        S3Bucket: my-function-code-b00
+        S3Key: api-endpoint-handler.zip
 
   apiExecutionLambdaInvokePermission:
     Type: AWS::Lambda::Permission
@@ -134,18 +165,3 @@ Resources:
       Subscription:
         - Protocol: email
           Endpoint: "shaiksaifuddin95@gmail.com"
-
-  # # New Lambda IAM Policy to allow SNS Publish
-  # ApiBuilderLambdaPolicy:
-  #   Type: AWS::IAM::Policy
-  #   Properties:
-  #     PolicyName: "ApiBuilderLambdaPolicy"
-  #     PolicyDocument:
-  #       Version: "2012-10-17"
-  #       Statement:
-  #         - Effect: Allow
-  #           Action:
-  #             - "sns:Publish"
-  #           Resource: !Ref ApiBuilderSNSTopic
-  #     Roles:
-  #       - LabRole
