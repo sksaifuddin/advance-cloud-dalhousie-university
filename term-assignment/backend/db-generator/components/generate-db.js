@@ -59,7 +59,6 @@ const generateJWTToken = (dbName, userId, secretkey) => {
 
 const sendEmail = async (dbName, token) => {
   const message = `Your JWT token for ${dbName} is ${token}`;
-  
   const params = {
     Message: message,
     Subject: "New JWT Token",
