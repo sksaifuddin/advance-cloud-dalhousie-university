@@ -1,9 +1,7 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:8080'; // Replace this with your actual backend URL
-
 const api = axios.create({
-  baseURL: BASE_URL,
+  baseURL: process.env.REACT_APP_NODE_SERVER_IP,
 });
 
 export const generateDatabase = async (userId, tableName, columns) => {

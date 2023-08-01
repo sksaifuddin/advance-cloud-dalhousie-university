@@ -20,6 +20,23 @@ Resources:
           usermod -a -G docker ec2-user
           docker pull shaiksaifuddin/api-builder:latest
           docker run -d -p 80:8080 shaiksaifuddin/api-builder:latest
+  
+  EC2InstanceFrontend:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      ImageId: ami-0f34c5ae932e6f0e4
+      SecurityGroups:
+        - !Ref EC2SecurityGroup
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          yum update -y
+          yum install -y docker
+          service docker start
+          usermod -a -G docker ec2-user
+          docker pull shaiksaifuddin/api-builder-frontend:latest
+          docker run -d -p 80:3000 -e REACT_APP_NODE_SERVER_IP=http://${EC2Instance.PublicIp} shaiksaifuddin/api-builder-frontend
 
   EC2SecurityGroup:
     Type: AWS::EC2::SecurityGroup

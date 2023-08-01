@@ -5,6 +5,7 @@ import UserDatabases from "./pages/UserDatabases/UserDatabases";
 import ApiList from "./pages/ApiList/ApiList";
 
 function App() {
+  localStorage.setItem("user_id", 1)
   return (
     <BrowserRouter>
       <Layout>
