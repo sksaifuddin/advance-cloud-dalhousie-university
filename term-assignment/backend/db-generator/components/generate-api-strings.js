@@ -1,5 +1,5 @@
 
-const apiGatewayUrl = "https://l9o9k3vjmd.execute-api.us-east-1.amazonaws.com";
+const { getSecretsFromManager } = require("../database");
 
 const generateApiEndpoint = (apiGatewayUrl, userId, tableName) => {
     // Replace the placeholder values with actual values
@@ -7,7 +7,8 @@ const generateApiEndpoint = (apiGatewayUrl, userId, tableName) => {
     return endpoint;
   };
 
-const generateApiStrings = (userId, tableName) => {
+const generateApiStrings = async (userId, tableName) => {
+    const { apigateway: apiGatewayUrl } =  await getSecretsFromManager();
     return {
         data: [
             {

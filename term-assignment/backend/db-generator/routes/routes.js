@@ -23,7 +23,7 @@ router.post('/generate-db', async (req, res) => {
 
 router.get('/get-api-urls/:userId/:tableName', async (req, res) => {
     const { userId, tableName } = req?.params;
-    const response = generateApiStrings(userId, tableName);
+    const response = await generateApiStrings(userId, tableName);
     res.send(response);
 })
 

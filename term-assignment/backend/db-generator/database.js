@@ -17,13 +17,14 @@ const getSecretsFromManager = async () => {
     const data = await secretsManagerClient.send(command);
     if ("SecretString" in data) {
       const secretString = data.SecretString;
-      const { user, password, host, database, secretkey } = JSON.parse(secretString);
+      const { user, password, host, database, secretkey, apigateway } = JSON.parse(secretString);
       return {
         user,
         password,
         host,
         database,
-        secretkey
+        secretkey,
+        apigateway
       };
     } else {
       throw new Error("SecretString not found in the response");

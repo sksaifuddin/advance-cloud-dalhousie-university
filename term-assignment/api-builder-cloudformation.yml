@@ -51,20 +51,6 @@ Resources:
           IpProtocol: tcp
           FromPort: 80
           ToPort: 80
-  
-  APIBuilderSecret:
-    Type: AWS::SecretsManager::Secret
-    Properties:
-      Name: APIBuilderSecret
-      Description: API Builder secrets
-      SecretString: !Sub |
-        {
-          "user": "admin",
-          "password": "password",
-          "database": "user",
-          "secretkey": "shaik-saifuddin-b00934531",
-          "host": !GetAtt APIBuilderDatabase.Endpoint
-        }
 
   APIBuilderDatabase:
     Type: AWS::RDS::DBInstance
@@ -173,6 +159,20 @@ Resources:
         AutoDeploy: true
         StageName: dev
   
+  APIBuilderSecret:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Name: APIBuilderSecret
+      Description: API Builder secrets
+      SecretString: !Sub |
+        {
+          "user": "admin",
+          "password": "password",
+          "database": "user",
+          "secretkey": "shaik-saifuddin-b00934531",
+          "apigateway": "https://${ApiBuilderHttpApi}.execute-api.${AWS::Region}.amazonaws.com/${ApiBuilderDefaultStage}",
+          "host": "${APIBuilderDatabase}"
+        }
 
   ApiBuilderSNSTopic:
     Type: AWS::SNS::Topic
