@@ -19,7 +19,7 @@ const getTableColumns = async (tableName) => {
 const getAllTables = async (userId) => {
   const db = await connectToDatabase();
   try {
-    // Step 1: Get all tables of the user from the users_databases table
+     // Get all tables of the user from the users_databases table
     const userTables = await new Promise((resolve, reject) => {
       db.query(
         `SELECT * FROM users_databases WHERE user_id = ?`,
@@ -36,7 +36,7 @@ const getAllTables = async (userId) => {
       return { data: [] };
     }
 
-    // Step 2: Fetch data from each table
+    // Fetch data from each table
     const dataPromises = userTables.map(async (table) => {
       // Fetch column details for the current table
       const columns = await getTableColumns(table.database_name);
@@ -70,7 +70,7 @@ const getAllTables = async (userId) => {
     // Wait for all the data fetching to complete
     const data = await Promise.all(dataPromises);
 
-    // Step 3: Return the final object
+    // Return the final object
     return { data };
   } catch (error) {
     console.error("Error fetching tables data:", error);

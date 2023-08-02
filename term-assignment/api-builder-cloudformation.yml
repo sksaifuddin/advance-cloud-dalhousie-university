@@ -1,9 +1,10 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
-Description: Lambda with HTTP API gateway demo stack
+Description: API builder Term assignment template
 
 Resources:
 
+  // For backend deployment
   EC2Instance:
     Type: AWS::EC2::Instance
     Properties:
@@ -21,6 +22,7 @@ Resources:
           docker pull shaiksaifuddin/api-builder:latest
           docker run -d -p 80:8080 shaiksaifuddin/api-builder:latest
   
+  // for frontend deployment
   EC2InstanceFrontend:
     Type: AWS::EC2::Instance
     Properties:
@@ -73,6 +75,7 @@ Resources:
       DeletionProtection: false
       DBInstanceIdentifier: !Sub "ApiBuilderRDSInstance-${AWS::StackName}"
 
+  // lambda which will be triggered when RDS instance is created
   TriggerFunction:
     Type: AWS::Lambda::Function
     Properties:
@@ -81,14 +84,8 @@ Resources:
       Handler: "index.handler"
       Role: arn:aws:iam::551539299746:role/LabRole
       Code:
-        ZipFile: >
-          var response = require('cfn-response');
-          exports.handler = function(event, context) {
-          console.log(event);
-          var input = parseInt(event.ResourceProperties.Input);
-            var responseData = {Value: input * 5};
-          response.send(event, context, response.SUCCESS, responseData);
-          };
+        S3Bucket: my-function-code-b00
+        S3Key: apibuilder-trigger.zip
   
   ApiBuilderTriggerCustomResource:
     Type: Custom::ApiBuilderTriggerCustomResource
@@ -106,6 +103,7 @@ Resources:
           FromPort: 3306
           ToPort: 3306
 
+  // function which handles API execution
   apiExecutionFunction:
     Type: AWS::Lambda::Function
     Properties:
@@ -116,6 +114,7 @@ Resources:
       Code:
         S3Bucket: my-function-code-b00
         S3Key: api-endpoint-handler.zip
+      Timeout: 100
 
   apiExecutionLambdaInvokePermission:
     Type: AWS::Lambda::Permission
@@ -124,6 +123,7 @@ Resources:
       Action: "lambda:InvokeFunction"
       Principal: apigateway.amazonaws.com
 
+  // api gateway
   ApiBuilderHttpApi:
     Type: AWS::ApiGatewayV2::Api
     Properties:
@@ -168,17 +168,17 @@ Resources:
         {
           "user": "admin",
           "password": "password",
-          "database": "user",
+          "database": "apibuilder",
           "secretkey": "shaik-saifuddin-b00934531",
           "apigateway": "https://${ApiBuilderHttpApi}.execute-api.${AWS::Region}.amazonaws.com/${ApiBuilderDefaultStage}",
           "host": "${APIBuilderDatabase}"
         }
 
-  ApiBuilderSNSTopic:
-    Type: AWS::SNS::Topic
-    Properties:
-      TopicName: "ApiBuilderTopic" 
-      DisplayName: "API Builder SNS Topic"
-      Subscription:
-        - Protocol: email
-          Endpoint: "shaiksaifuddin95@gmail.com"
+  # ApiBuilderSNSTopic:
+  #   Type: AWS::SNS::Topic
+  #   Properties:
+  #     TopicName: "ApiBuilderTopic" 
+  #     DisplayName: "API Builder SNS Topic"
+  #     Subscription:
+  #       - Protocol: email
+  #         Endpoint: "shaiksaifuddin95@gmail.com"

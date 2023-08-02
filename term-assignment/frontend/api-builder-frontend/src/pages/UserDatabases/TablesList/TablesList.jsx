@@ -12,7 +12,6 @@ function TablesList({ reloadData }) {
   const [tablesData, setTablesData] = useState([]);
 
   useEffect(() => {
-    // Replace 'YOUR_USER_ID' with the actual user ID you want to fetch the data for
     const userId = localStorage.getItem("user_id");
 
     // Fetch the data from the API

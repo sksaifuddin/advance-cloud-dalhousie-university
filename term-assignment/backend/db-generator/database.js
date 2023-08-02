@@ -8,6 +8,11 @@ const {
 const getSecretsFromManager = async () => {
   const secretsManagerClient = new SecretsManagerClient({
     region: "us-east-1",
+    credentials: {
+      accessKeyId: "ASIAYA2SN2WRLWXYF6PV",
+      secretAccessKey: "ooMKQveefl5TfVvg8F6+gyp9phggZ7YjlS+CMjwQ",
+      sessionToken: "FwoGZXIvYXdzEFEaDHgByIX9OfW0Dmn3AiLAAdy6lpUmn2Ea94zFAczGIw9I+dVmRwOCL9qjwVm5MhJoeCu3AQczZqKdb9YznHJrpp+YZy/GaMo+APkKtVJ3hmijk4X1dbnOqyktuyQvB4P9xs6k0PgdJunxxfanHejraPi6esu17ehSolDZan5PuHI95nnxeDJupxhcGnyN+5ZgNDDnPMcIN8CfDIeuy+hHexj0unezk2Hz4Q1NEf23x7FECUEtkAmhf6774tYNn0gCJ5LlOEjwE/KLirlHnc7bWyjQ2KSmBjItyCJF6ummV442eWKuonEi38MpsX7OU3TehcbbI1fJAup6LlCnQBEBS8JRQhCO"
+    }
   }); // Replace with your desired region
   const secretName = "APIBuilderSecret"; // Replace with your secret name
 
