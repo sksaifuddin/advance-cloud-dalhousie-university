@@ -2,9 +2,6 @@
 
 It’s a tool for developers to create APIs faster without even writing code and only concentrates on the frontend of the application. It can be useful for creating rapid prototypes of applications (POCs) to show customers. Currently, it’s developed by assuming that it will be developed for an organization and not public, so it does not have user registration feature. The tool is built fully on AWS cloud and uses serverless Lambda function to execute dynamically generated APIs.
 
-## Demo
-
-
 
 ## Services used
 
@@ -17,6 +14,9 @@ It’s a tool for developers to create APIs faster without even writing code and
 
 ![Architecture](term-assignment\images\term-assignment-architecture-1.png)
 
+## Demo
+
+https://youtu.be/09onZ9HlFMM
 
 ## Deployment Model
 The cloud deployment model used for this application is “Public cloud”. The whole infrastructure of the application is built using AWS which is third party owned cloud, we just provisioned all the infrastructure needed, hence this comes under “Public Cloud”.
